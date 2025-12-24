@@ -1,51 +1,51 @@
 Roll_Number,Date,Time,Subject,Status,Label
 101,2025-12-01,8:01,Math,Present,0
-102,2025-12-01,8:03,Math,Present,1
-103,2025-12-01,8:05,Math,Present,0
+102,2025-12-01,8:03,Physics,Present,1
+103,2025-12-01,8:05,Chemistry,Present,0
 104,2025-12-01,8:07,English,Present,1
-105,2025-12-01,8:01,English,Present,0
-106,2025-12-01,8:08,English,Present,1
-107,2025-12-01,8:02,Computer Science,Present,0
-108,2025-12-01,8:06,Computer Science,Present,1
-109,2025-12-02,8:03,Math,Present,0
-110,2025-12-02,8:05,Math,Present,1
-111,2025-12-02,8:07,Math,Present,0
-112,2025-12-02,8:01,English,Present,1
-113,2025-12-02,8:08,English,Present,0
-114,2025-12-02,8:02,Computer Science,Present,1
-115,2025-12-02,8:04,Computer Science,Present,0
-116,2025-12-03,8:06,Math,Present,1
-117,2025-12-03,8:03,Math,Present,0
-118,2025-12-03,8:07,English,Present,1
-119,2025-12-03,8:01,English,Present,0
-120,2025-12-03,8:05,Computer Science,Present,1
-121,2025-12-03,8:02,Computer Science,Present,0
-122,2025-12-04,8:04,Math,Present,1
-123,2025-12-04,8:06,Math,Present,0
-124,2025-12-04,8:01,English,Present,1
-125,2025-12-04,8:03,English,Present,0
-126,2025-12-04,8:07,Computer Science,Present,1
-127,2025-12-04,8:02,Computer Science,Present,0
-128,2025-12-05,8:05,Math,Present,1
-129,2025-12-05,8:01,Math,Present,0
-130,2025-12-05,8:08,English,Present,1
-131,2025-12-05,8:03,English,Present,0
-132,2025-12-05,8:06,Computer Science,Present,1
-133,2025-12-05,8:02,Computer Science,Present,0
-134,2025-12-06,8:04,Math,Present,1
-135,2025-12-06,8:07,Math,Present,0
-136,2025-12-06,8:01,English,Present,1
-137,2025-12-06,8:05,English,Present,0
-138,2025-12-06,8:03,Computer Science,Present,1
-139,2025-12-06,8:06,Computer Science,Present,0
-140,2025-12-07,8:02,Math,Present,1
-141,2025-12-07,8:08,Math,Present,0
-142,2025-12-07,8:01,English,Present,1
-143,2025-12-07,8:04,English,Present,0
-144,2025-12-07,8:07,Computer Science,Present,1
-145,2025-12-07,8:03,Computer Science,Present,0
-146,2025-12-08,8:05,Math,Present,1
-147,2025-12-08,8:01,Math,Present,0
-148,2025-12-08,8:08,English,Present,1
-149,2025-12-08,8:02,English,Present,0
-150,2025-12-08,8:06,Computer Science,Present,1
+105,2025-12-01,8:02,Computer Science,Present,0
+106,2025-12-01,8:04,Math,Present,1
+107,2025-12-01,8:06,Physics,Present,0
+108,2025-12-01,8:08,Chemistry,Present,1
+109,2025-12-02,8:01,English,Present,0
+110,2025-12-02,8:03,Computer Science,Present,1
+111,2025-12-02,8:05,Math,Present,0
+112,2025-12-02,8:07,Physics,Present,1
+113,2025-12-02,8:02,Chemistry,Present,0
+114,2025-12-02,8:04,English,Present,1
+115,2025-12-02,8:06,Computer Science,Present,0
+116,2025-12-03,8:01,Math,Present,1
+117,2025-12-03,8:03,Physics,Present,0
+118,2025-12-03,8:05,Chemistry,Present,1
+119,2025-12-03,8:07,English,Present,0
+120,2025-12-03,8:02,Computer Science,Present,1
+121,2025-12-03,8:04,Math,Present,0
+122,2025-12-04,8:01,Physics,Present,1
+123,2025-12-04,8:03,Chemistry,Present,0
+124,2025-12-04,8:05,English,Present,1
+125,2025-12-04,8:07,Computer Science,Present,0
+126,2025-12-04,8:02,Math,Present,1
+127,2025-12-04,8:04,Physics,Present,0
+128,2025-12-05,8:01,Chemistry,Present,1
+129,2025-12-05,8:03,English,Present,0
+130,2025-12-05,8:05,Computer Science,Present,1
+131,2025-12-05,8:07,Math,Present,0
+132,2025-12-05,8:02,Physics,Present,1
+133,2025-12-05,8:04,Chemistry,Present,0
+134,2025-12-06,8:01,English,Present,1
+135,2025-12-06,8:03,Computer Science,Present,0
+136,2025-12-06,8:05,Math,Present,1
+137,2025-12-06,8:07,Physics,Present,0
+138,2025-12-06,8:02,Chemistry,Present,1
+139,2025-12-06,8:04,English,Present,0
+140,2025-12-07,8:01,Computer Science,Present,1
+141,2025-12-07,8:03,Math,Present,0
+142,2025-12-07,8:05,Physics,Present,1
+143,2025-12-07,8:07,Chemistry,Present,0
+144,2025-12-07,8:02,English,Present,1
+145,2025-12-07,8:04,Computer Science,Present,0
+146,2025-12-08,8:01,Math,Present,1
+147,2025-12-08,8:03,Physics,Present,0
+148,2025-12-08,8:05,Chemistry,Present,1
+149,2025-12-08,8:07,English,Present,0
+150,2025-12-08,8:02,Computer Science,Present,1
