@@ -1,0 +1,11 @@
+roll_no,date,time,subject,status,label
+101,2025-01-10,09:01,Math,Present,0
+102,2025-01-10,09:02,Math,Present,0
+103,2025-01-10,09:01,Math,Present,1
+104,2025-01-10,09:03,Math,Present,0
+105,2025-01-10,09:01,Math,Present,1
+101,2025-01-11,09:01,Math,Present,1
+102,2025-01-11,09:04,Math,Present,0
+103,2025-01-11,09:01,Math,Present,1
+104,2025-01-11,09:05,Math,Absent,0
+105,2025-01-11,09:01,Math,Present,1
