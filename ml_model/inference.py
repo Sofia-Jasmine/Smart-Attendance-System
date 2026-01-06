@@ -1,5 +1,7 @@
+import os 
 import joblib
 import pandas as pd
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 def flag_risk(prediction, confidence):
     if prediction == 1 and confidence >= 0.85:
@@ -10,8 +12,9 @@ def flag_risk(prediction, confidence):
         return "LOW RISK / NORMAL"
 
 
-model = joblib.load("models/proxy_attendance_rf.pkl")
-features = joblib.load("artifacts/model_features.pkl")
+model = joblib.load(os.path.join(BASE_DIR, "models", "proxy_attendance_rf.pkl"))
+features = joblib.load(os.path.join(BASE_DIR, "artifacts", "model_features.pkl"))
+
 
 def predict_proxy(input_data: dict):
     X = pd.DataFrame([input_data], columns=features)

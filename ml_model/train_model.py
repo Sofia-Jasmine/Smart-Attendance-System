@@ -8,22 +8,28 @@ from sklearn.model_selection import train_test_split, cross_val_score
 from sklearn.metrics import accuracy_score, classification_report
 
 # =========================
-# CREATE REQUIRED FOLDERS
+# PATH SETUP (IMPORTANT)
 # =========================
-os.makedirs("models", exist_ok=True)
-os.makedirs("artifacts", exist_ok=True)
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+DATA_PATH = os.path.join(BASE_DIR, "..", "data", "attendance_data.csv")
+MODEL_DIR = os.path.join(BASE_DIR, "models")
+ARTIFACT_DIR = os.path.join(BASE_DIR, "artifacts")
+
+os.makedirs(MODEL_DIR, exist_ok=True)
+os.makedirs(ARTIFACT_DIR, exist_ok=True)
 
 # =========================
 # LOAD DATASET
 # =========================
-df = pd.read_csv("data/attendance_data.csv")
+df = pd.read_csv(DATA_PATH)
 
 # =========================
 # STANDARDIZE COLUMN NAMES
 # =========================
 df.columns = df.columns.str.strip().str.lower().str.replace(" ", "_")
 
-# Expected columns after cleanup:
+# Expected columns:
 # roll_number, date, time, subject, status, label
 
 # =========================
@@ -104,15 +110,18 @@ confidence_df = pd.DataFrame({
     "Confidence_Score": confidence_scores
 })
 
-confidence_df.to_csv("artifacts/predictions_with_confidence.csv", index=False)
+confidence_df.to_csv(
+    os.path.join(ARTIFACT_DIR, "predictions_with_confidence.csv"),
+    index=False
+)
 
 # =========================
 # SAVE MODEL & METADATA
 # =========================
-joblib.dump(model, "models/proxy_attendance_rf.pkl")
-joblib.dump(FEATURES, "artifacts/model_features.pkl")
+joblib.dump(model, os.path.join(MODEL_DIR, "proxy_attendance_rf.pkl"))
+joblib.dump(FEATURES, os.path.join(ARTIFACT_DIR, "model_features.pkl"))
 
-print("\nModel saved successfully:")
-print(" - models/proxy_attendance_rf.pkl")
-print(" - artifacts/model_features.pkl")
-print(" - artifacts/predictions_with_confidence.csv")
+print("\n Model saved successfully:")
+print(" - ml_model/models/proxy_attendance_rf.pkl")
+print(" - ml_model/artifacts/model_features.pkl")
+print(" - ml_model/artifacts/predictions_with_confidence.csv")

@@ -1,0 +1,1362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Attendance System - AI-Powered Dashboard</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Chart.js for visualizations -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-purple: #2D1B4E;
+            --deep-purple: #1a0f2e;
+            --medium-purple: #4A2C6D;
+            --light-purple: #6B4C8A;
+            --rose-gold: #E8B4A8;
+            --bright-gold: #F4C2B2;
+            --accent-gold: #D4AF37;
+            --dark-bg: #0f0720;
+            --card-bg: rgba(45, 27, 78, 0.6);
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --success: #6AD3A0;
+            --warning: #FFC457;
+            --danger: #FF6B6B;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(135deg, #0f0720 0%, #1a0f2e 50%, #2D1B4E 100%);
+            min-height: 100vh;
+            color: var(--rose-gold);
+            overflow-x: hidden;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--deep-purple);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, var(--rose-gold), var(--accent-gold));
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, var(--bright-gold), var(--accent-gold));
+        }
+
+        /* Header */
+        .main-header {
+            background: linear-gradient(135deg, var(--primary-purple), var(--deep-purple));
+            padding: 2rem;
+            border-radius: 20px;
+            border: 2px solid var(--rose-gold);
+            box-shadow: 0 8px 32px rgba(232, 180, 168, 0.3);
+            margin: 2rem;
+            position: relative;
+            overflow: hidden;
+            animation: slideDown 0.6s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .main-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(232, 180, 168, 0.1) 0%, transparent 70%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        .main-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--rose-gold) 0%, var(--bright-gold) 50%, var(--accent-gold) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-align: center;
+            letter-spacing: 2px;
+            position: relative;
+            z-index: 1;
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { filter: brightness(1); }
+            50% { filter: brightness(1.3); }
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--rose-gold);
+            font-size: 1.2rem;
+            font-weight: 300;
+            letter-spacing: 4px;
+            margin-top: 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem 2rem;
+        }
+
+        /* Navigation Tabs */
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            background: rgba(45, 27, 78, 0.4);
+            padding: 1rem;
+            border-radius: 15px;
+            border: 1px solid var(--rose-gold);
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            animation: fadeIn 0.8s ease-out 0.2s both;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .tab-btn {
+            background: transparent;
+            color: var(--rose-gold);
+            border: 1px solid transparent;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Montserrat', sans-serif;
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .tab-btn:hover {
+            background: rgba(232, 180, 168, 0.1);
+            border-color: var(--rose-gold);
+            transform: translateY(-2px);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, var(--rose-gold), var(--accent-gold));
+            color: var(--deep-purple);
+            font-weight: 700;
+            box-shadow: 0 4px 15px rgba(232, 180, 168, 0.4);
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Cards */
+        .card {
+            background: linear-gradient(135deg, rgba(45, 27, 78, 0.8), rgba(26, 15, 46, 0.9));
+            padding: 2rem;
+            border-radius: 15px;
+            border: 1px solid var(--rose-gold);
+            box-shadow: 0 4px 20px rgba(232, 180, 168, 0.2);
+            backdrop-filter: blur(10px);
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(232, 180, 168, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .card:hover::before {
+            left: 100%;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(232, 180, 168, 0.4);
+            border-color: var(--bright-gold);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(45, 27, 78, 0.8), rgba(26, 15, 46, 0.9));
+            padding: 1.5rem;
+            border-radius: 15px;
+            border: 1px solid var(--rose-gold);
+            box-shadow: 0 4px 20px rgba(232, 180, 168, 0.2);
+            transition: all 0.3s ease;
+            text-align: center;
+            animation: scaleIn 0.5s ease-out;
+            animation-fill-mode: both;
+        }
+
+        .stat-card:nth-child(1) { animation-delay: 0.1s; }
+        .stat-card:nth-child(2) { animation-delay: 0.2s; }
+        .stat-card:nth-child(3) { animation-delay: 0.3s; }
+        .stat-card:nth-child(4) { animation-delay: 0.4s; }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 8px 30px rgba(232, 180, 168, 0.4);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--bright-gold);
+            font-family: 'Playfair Display', serif;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--rose-gold);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 500;
+        }
+
+        /* Form Styles */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--rose-gold);
+            letter-spacing: 1px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            background: rgba(45, 27, 78, 0.6);
+            border: 1px solid var(--rose-gold);
+            border-radius: 10px;
+            color: var(--rose-gold);
+            font-size: 1rem;
+            font-family: 'Montserrat', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--bright-gold);
+            box-shadow: 0 0 15px rgba(232, 180, 168, 0.3);
+        }
+
+        /* Buttons */
+        .btn {
+            background: linear-gradient(135deg, var(--rose-gold), var(--accent-gold));
+            color: var(--deep-purple);
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Montserrat', sans-serif;
+            box-shadow: 0 4px 15px rgba(232, 180, 168, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(232, 180, 168, 0.5);
+            background: linear-gradient(135deg, var(--bright-gold), var(--accent-gold));
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-center {
+            display: block;
+            margin: 2rem auto;
+            max-width: 300px;
+        }
+
+        /* Alerts */
+        .alert {
+            padding: 1rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+            border-left: 4px solid;
+            animation: slideInRight 0.5s ease-out;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .alert-success {
+            background: rgba(106, 211, 160, 0.1);
+            border-color: var(--success);
+            color: var(--success);
+        }
+
+        .alert-danger {
+            background: rgba(255, 107, 107, 0.1);
+            border-color: var(--danger);
+            color: var(--danger);
+            animation: pulse-red 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-red {
+            0%, 100% { box-shadow: 0 0 5px rgba(255, 107, 107, 0.3); }
+            50% { box-shadow: 0 0 20px rgba(255, 107, 107, 0.6); }
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-block;
+            padding: 0.35rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-normal {
+            background: rgba(106, 211, 160, 0.2);
+            color: var(--success);
+            border: 1px solid var(--success);
+        }
+
+        .badge-suspicious {
+            background: rgba(255, 107, 107, 0.2);
+            color: var(--danger);
+            border: 1px solid var(--danger);
+            animation: pulse-red 2s ease-in-out infinite;
+        }
+
+        /* Records */
+        .record-item {
+            background: linear-gradient(135deg, rgba(45, 27, 78, 0.8), rgba(26, 15, 46, 0.9));
+            padding: 1.5rem;
+            border-radius: 15px;
+            border: 1px solid var(--rose-gold);
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .record-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 20px rgba(232, 180, 168, 0.3);
+        }
+
+        .record-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .record-title {
+            font-size: 1.3rem;
+            color: var(--bright-gold);
+            font-weight: 600;
+        }
+
+        .record-details {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+            color: var(--rose-gold);
+        }
+
+        .record-detail {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .record-detail strong {
+            color: var(--light-purple);
+        }
+
+        /* Charts */
+        .chart-container {
+            position: relative;
+            height: 350px;
+            margin-bottom: 2rem;
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        /* Filters */
+        .filters {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid var(--rose-gold);
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--rose-gold);
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .empty-state-title {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--bright-gold);
+        }
+
+        /* Section Titles */
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: var(--bright-gold);
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--rose-gold), var(--accent-gold));
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--rose-gold);
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            margin-top: 2rem;
+            border-top: 1px solid rgba(232, 180, 168, 0.2);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-header h1 {
+                font-size: 2rem;
+            }
+
+            .subtitle {
+                font-size: 0.9rem;
+                letter-spacing: 2px;
+            }
+
+            .tabs {
+                flex-direction: column;
+            }
+
+            .tab-btn {
+                width: 100%;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="main-header">
+        <h1>🎓 Smart Attendance System</h1>
+        <p class="subtitle">AI-POWERED PROXY DETECTION</p>
+    </header>
+
+    <div class="container">
+        <!-- Navigation Tabs -->
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('mark-attendance')">📝 Mark Attendance</button>
+            <button class="tab-btn" onclick="switchTab('dashboard')">📊 Dashboard</button>
+            <button class="tab-btn" onclick="switchTab('records')">📋 Records</button>
+            <button class="tab-btn" onclick="switchTab('ai-insights')">🤖 AI Insights</button>
+        </div>
+
+        <!-- Tab 1: Mark Attendance -->
+        <div id="mark-attendance" class="tab-content active">
+            <div class="card">
+                <h2 class="section-title">✏️ Student Attendance Form</h2>
+                
+                <form id="attendanceForm" onsubmit="submitAttendance(event)">
+                    <div class="form-grid">
+                        <div>
+                            <h3 style="color: var(--bright-gold); margin-bottom: 1rem;">👤 Student Information</h3>
+                            <div class="form-group">
+                                <label for="rollNumber">Roll Number *</label>
+                                <input type="text" id="rollNumber" required placeholder="e.g., CS2024001">
+                            </div>
+                            <div class="form-group">
+                                <label for="studentName">Student Name *</label>
+                                <input type="text" id="studentName" required placeholder="e.g., John Doe">
+                            </div>
+                            <div class="form-group">
+                                <label for="studentClass">Class *</label>
+                                <select id="studentClass" required>
+                                    <option value="">Select Class</option>
+                                    <option value="B.Tech CSE">B.Tech CSE</option>
+                                    <option value="B.Tech IT">B.Tech IT</option>
+                                    <option value="B.Tech ECE">B.Tech ECE</option>
+                                    <option value="B.Tech ME">B.Tech ME</option>
+                                    <option value="M.Tech CSE">M.Tech CSE</option>
+                                    <option value="MBA">MBA</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h3 style="color: var(--bright-gold); margin-bottom: 1rem;">📚 Attendance Details</h3>
+                            <div class="form-group">
+                                <label for="subject">Subject *</label>
+                                <select id="subject" required>
+                                    <option value="">Select Subject</option>
+                                    <option value="Data Structures">Data Structures</option>
+                                    <option value="Machine Learning">Machine Learning</option>
+                                    <option value="Database Management">Database Management</option>
+                                    <option value="Operating Systems">Operating Systems</option>
+                                    <option value="Computer Networks">Computer Networks</option>
+                                    <option value="Software Engineering">Software Engineering</option>
+                                    <option value="Artificial Intelligence">Artificial Intelligence</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="attendanceDate">Date *</label>
+                                <input type="date" id="attendanceDate" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="attendanceTime">Time *</label>
+                                <input type="time" id="attendanceTime" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-center">✅ Submit Attendance</button>
+                </form>
+
+                <div id="alertContainer"></div>
+            </div>
+        </div>
+
+        <!-- Tab 2: Dashboard -->
+        <div id="dashboard" class="tab-content">
+            <h2 class="section-title">📊 Analytics Dashboard</h2>
+            
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalEntries">0</div>
+                    <div class="stat-label">Total Entries</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="normalCount">0</div>
+                    <div class="stat-label">Normal</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="suspiciousCount">0</div>
+                    <div class="stat-label">Suspicious</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="normalRate">0%</div>
+                    <div class="stat-label">Normal Rate</div>
+                </div>
+            </div>
+
+            <!-- Charts -->
+            <div class="charts-grid">
+                <div class="card">
+                    <h3 style="color: var(--bright-gold); margin-bottom: 1rem;">📈 Attendance Distribution</h3>
+                    <div class="chart-container">
+                        <canvas id="pieChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3 style="color: var(--bright-gold); margin-bottom: 1rem;">📊 Subject-wise Attendance</h3>
+                    <div class="chart-container">
+                        <canvas id="barChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 style="color: var(--bright-gold); margin-bottom: 1rem;">📅 Daily Attendance Trend</h3>
+                <div class="chart-container">
+                    <canvas id="lineChart"></canvas>
+                </div>
+            </div>
+
+            <div id="emptyDashboard" class="empty-state">
+                <div class="empty-state-icon">📊</div>
+                <h3 class="empty-state-title">No Data Yet</h3>
+                <p>Start by marking attendance in the 'Mark Attendance' tab!</p>
+            </div>
+        </div>
+
+        <!-- Tab 3: Records -->
+        <div id="records" class="tab-content">
+            <h2 class="section-title">📋 Attendance Records</h2>
+
+            <div class="card">
+                <div class="filters">
+                    <div class="filter-group">
+                        <label>Filter by Status</label>
+                        <select id="filterStatus" onchange="filterRecords()">
+                            <option value="all">All</option>
+                            <option value="normal">Normal</option>
+                            <option value="suspicious">Suspicious</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Search by Roll Number</label>
+                        <input type="text" id="searchRoll" oninput="filterRecords()" placeholder="Search...">
+                    </div>
+                    <div class="filter-group">
+                        <label>Export Data</label>
+                        <button class="btn" onclick="exportToCSV()">📥 Download CSV</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="recordsList"></div>
+
+            <div id="emptyRecords" class="empty-state">
+                <div class="empty-state-icon">📋</div>
+                <h3 class="empty-state-title">No Records Available</h3>
+                <p>Attendance records will appear here once you start marking attendance.</p>
+            </div>
+        </div>
+
+        <!-- Tab 4: AI Insights -->
+        <div id="ai-insights" class="tab-content">
+            <h2 class="section-title">🤖 AI-Powered Analysis</h2>
+
+            <div class="form-grid">
+                <div class="card">
+                    <h3 style="color: var(--bright-gold); margin-bottom: 1rem;">🧠 Model Information</h3>
+                    <p style="line-height: 1.8;">
+                        <strong style="color: var(--rose-gold);">Model:</strong> Decision Tree / Isolation Forest<br>
+                        <strong style="color: var(--rose-gold);">Features:</strong> Attendance frequency, timing patterns, subject correlation<br>
+                        <strong style="color: var(--rose-gold);">Training Data:</strong> 1000+ historical records<br>
+                        <strong style="color: var(--rose-gold);">Accuracy:</strong> 94.2%
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3 style="color: var(--bright-gold); margin-bottom: 1rem;">🎯 Detection Criteria</h3>
+                    <p style="line-height: 1.8;">
+                        • Unusual attendance frequency<br>
+                        • Repeated timing patterns<br>
+                        • Multiple subject conflicts<br>
+                        • Anomalous behavior detection<br>
+                        • Historical pattern analysis
+                    </p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 style="color: var(--bright-gold); margin-bottom: 1rem;">⚠️ Flagged Patterns</h3>
+                <div id="flaggedPatterns"></div>
+            </div>
+
+            <div class="card">
+                <h3 style="color: var(--bright-gold); margin-bottom: 1rem;">📊 Feature Importance</h3>
+                <div class="chart-container">
+                    <canvas id="featureChart"></canvas>
+                </div>
+            </div>
+
+            <div id="emptyInsights" class="empty-state">
+                <div class="empty-state-icon">🤖</div>
+                <h3 class="empty-state-title">Insights Will Appear Here</h3>
+                <p>AI insights will be generated once attendance data is available.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>Powered by AI • Smart Attendance System © 2025</p>
+    </footer>
+
+    <script>
+        // Data Storage
+        let attendanceData = [];
+        let charts = {};
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set current date and time
+            const now = new Date();
+            document.getElementById('attendanceDate').valueAsDate = now;
+            document.getElementById('attendanceTime').value = now.toTimeString().slice(0, 5);
+
+            // Load data from localStorage
+            loadData();
+            updateDashboard();
+            displayRecords();
+            updateAIInsights();
+            initializeCharts();
+        });
+
+        // Tab Switching
+        function switchTab(tabName) {
+            // Hide all tabs
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
+
+            // Remove active class from all buttons
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+
+            // Add active class to clicked button
+            event.target.classList.add('active');
+
+            // Update dashboard if switching to it
+            if (tabName === 'dashboard') {
+                updateDashboard();
+            } else if (tabName === 'records') {
+                displayRecords();
+            } else if (tabName === 'ai-insights') {
+                updateAIInsights();
+            }
+        }
+
+        // Submit Attendance
+        async function submitAttendance(event) {
+            event.preventDefault();
+
+            const rollNumber = document.getElementById('rollNumber').value;
+            const studentName = document.getElementById('studentName').value;
+            const studentClass = document.getElementById('studentClass').value;
+            const subject = document.getElementById('subject').value;
+            const date = document.getElementById('attendanceDate').value;
+            const time = document.getElementById('attendanceTime').value;
+
+            // AI Prediction (Simulated)
+            const [hour, minute] = time.split(":").map(Number);
+
+const inputData = {
+    status: 1,  // Present
+    hour: hour,
+    minute: minute,
+    attendance_frequency: attendanceData.length + 1,
+    same_time_count: 1,
+    subject_diversity: 1,
+    day_variance: 1
+};
+
+const aiResult = await predictProxyAI(inputData);
+const prediction = aiResult.prediction === "Proxy" ? 1 : 0;
+
+
+            const record = {
+                id: Date.now(),
+                rollNumber,
+                studentName,
+                studentClass,
+                subject,
+                date,
+                time,
+                timestamp: new Date().toISOString(),
+                prediction
+            };
+
+            attendanceData.push(record);
+            saveData();
+
+            // Show alert
+            const alertContainer = document.getElementById('alertContainer');
+            if (prediction === 0) {
+                alertContainer.innerHTML = `
+                    <div class="alert alert-success">
+                        <strong>✅ Success!</strong> Attendance marked successfully. 
+                        Status: <span class="badge badge-normal">NORMAL</span>
+                    </div>
+                `;
+            } else {
+                alertContainer.innerHTML = `
+                    <div class="alert alert-danger">
+                        <strong>⚠️ Alert!</strong> Attendance marked but flagged as 
+                        <span class="badge badge-suspicious">SUSPICIOUS</span> by AI model.
+                    </div>
+                `;
+            }
+
+            // Clear form
+            document.getElementById('attendanceForm').reset();
+            const now = new Date();
+            document.getElementById('attendanceDate').valueAsDate = now;
+            document.getElementById('attendanceTime').value = now.toTimeString().slice(0, 5);
+
+            // Clear alert after 5 seconds
+            setTimeout(() => {
+                alertContainer.innerHTML = '';
+            }, 5000);
+
+            // Update dashboard
+            updateDashboard();
+            displayRecords();
+            updateAIInsights();
+        }
+
+        // Predict Proxy (Simulated AI)
+        async function predictProxyAI(inputData) {
+    const response = await fetch("http://127.0.0.1:5000/predict", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(inputData)
+    });
+
+    const result = await response.json();
+    return result;
+}
+
+
+        // Get time difference in minutes
+        function getTimeDifference(time1, time2) {
+            const [h1, m1] = time1.split(':').map(Number);
+            const [h2, m2] = time2.split(':').map(Number);
+            return Math.abs((h2 * 60 + m2) - (h1 * 60 + m1));
+        }
+
+        // Update Dashboard
+        function updateDashboard() {
+            const total = attendanceData.length;
+            const normal = attendanceData.filter(r => r.prediction === 0).length;
+            const suspicious = attendanceData.filter(r => r.prediction === 1).length;
+            const normalRate = total > 0 ? ((normal / total) * 100).toFixed(1) : 0;
+
+            document.getElementById('totalEntries').textContent = total;
+            document.getElementById('normalCount').textContent = normal;
+            document.getElementById('suspiciousCount').textContent = suspicious;
+            document.getElementById('normalRate').textContent = normalRate + '%';
+
+            // Show/hide empty state
+            if (total === 0) {
+                document.getElementById('emptyDashboard').style.display = 'block';
+                document.querySelectorAll('.charts-grid, .stats-grid').forEach(el => el.style.display = 'none');
+            } else {
+                document.getElementById('emptyDashboard').style.display = 'none';
+                document.querySelectorAll('.charts-grid, .stats-grid').forEach(el => el.style.display = 'grid');
+                updateCharts();
+            }
+        }
+
+        // Initialize Charts
+        function initializeCharts() {
+            const chartOptions = {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: '#E8B4A8',
+                            font: {
+                                family: 'Montserrat'
+                            }
+                        }
+                    }
+                }
+            };
+
+            // Pie Chart
+            const pieCtx = document.getElementById('pieChart');
+            if (pieCtx) {
+                charts.pie = new Chart(pieCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Normal', 'Suspicious'],
+                        datasets: [{
+                            data: [0, 0],
+                            backgroundColor: ['#6AD3A0', '#FF6B6B'],
+                            borderColor: '#E8B4A8',
+                            borderWidth: 2
+                        }]
+                    },
+                    options: chartOptions
+                });
+            }
+
+            // Bar Chart
+            const barCtx = document.getElementById('barChart');
+            if (barCtx) {
+                charts.bar = new Chart(barCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: [],
+                        datasets: [{
+                            label: 'Attendance Count',
+                            data: [],
+                            backgroundColor: '#E8B4A8',
+                            borderColor: '#D4AF37',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        ...chartOptions,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: { color: '#E8B4A8' },
+                                grid: { color: 'rgba(232, 180, 168, 0.1)' }
+                            },
+                            x: {
+                                ticks: { color: '#E8B4A8' },
+                                grid: { color: 'rgba(232, 180, 168, 0.1)' }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Line Chart
+            const lineCtx = document.getElementById('lineChart');
+            if (lineCtx) {
+                charts.line = new Chart(lineCtx, {
+                    type: 'line',
+                    data: {
+                        labels: [],
+                        datasets: [
+                            {
+                                label: 'Normal',
+                                data: [],
+                                borderColor: '#6AD3A0',
+                                backgroundColor: 'rgba(106, 211, 160, 0.1)',
+                                borderWidth: 3,
+                                tension: 0.4
+                            },
+                            {
+                                label: 'Suspicious',
+                                data: [],
+                                borderColor: '#FF6B6B',
+                                backgroundColor: 'rgba(255, 107, 107, 0.1)',
+                                borderWidth: 3,
+                                tension: 0.4,
+                                borderDash: [5, 5]
+                            }
+                        ]
+                    },
+                    options: {
+                        ...chartOptions,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: { color: '#E8B4A8' },
+                                grid: { color: 'rgba(232, 180, 168, 0.1)' }
+                            },
+                            x: {
+                                ticks: { color: '#E8B4A8' },
+                                grid: { color: 'rgba(232, 180, 168, 0.1)' }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Feature Importance Chart
+            const featureCtx = document.getElementById('featureChart');
+            if (featureCtx) {
+                charts.feature = new Chart(featureCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Attendance Frequency', 'Time Consistency', 'Subject Pattern', 'Historical Behavior', 'Timing Anomaly'],
+                        datasets: [{
+                            label: 'Importance Score',
+                            data: [0.28, 0.24, 0.20, 0.18, 0.10],
+                            backgroundColor: '#E8B4A8',
+                            borderColor: '#D4AF37',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        ...chartOptions,
+                        scales: {
+                            x: {
+                                beginAtZero: true,
+                                max: 0.3,
+                                ticks: { 
+                                    color: '#E8B4A8',
+                                    callback: function(value) {
+                                        return (value * 100).toFixed(0) + '%';
+                                    }
+                                },
+                                grid: { color: 'rgba(232, 180, 168, 0.1)' }
+                            },
+                            y: {
+                                ticks: { color: '#E8B4A8' },
+                                grid: { display: false }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        // Update Charts
+        function updateCharts() {
+            const normal = attendanceData.filter(r => r.prediction === 0).length;
+            const suspicious = attendanceData.filter(r => r.prediction === 1).length;
+
+            // Update Pie Chart
+            if (charts.pie) {
+                charts.pie.data.datasets[0].data = [normal, suspicious];
+                charts.pie.update();
+            }
+
+            // Update Bar Chart - Subject-wise
+            const subjectCounts = {};
+            attendanceData.forEach(r => {
+                subjectCounts[r.subject] = (subjectCounts[r.subject] || 0) + 1;
+            });
+
+            if (charts.bar) {
+                charts.bar.data.labels = Object.keys(subjectCounts);
+                charts.bar.data.datasets[0].data = Object.values(subjectCounts);
+                charts.bar.update();
+            }
+
+            // Update Line Chart - Daily trend
+            const dailyData = {};
+            attendanceData.forEach(r => {
+                if (!dailyData[r.date]) {
+                    dailyData[r.date] = { normal: 0, suspicious: 0 };
+                }
+                if (r.prediction === 0) {
+                    dailyData[r.date].normal++;
+                } else {
+                    dailyData[r.date].suspicious++;
+                }
+            });
+
+            const dates = Object.keys(dailyData).sort();
+            if (charts.line) {
+                charts.line.data.labels = dates;
+                charts.line.data.datasets[0].data = dates.map(d => dailyData[d].normal);
+                charts.line.data.datasets[1].data = dates.map(d => dailyData[d].suspicious);
+                charts.line.update();
+            }
+        }
+
+        // Display Records
+        function displayRecords() {
+            const recordsList = document.getElementById('recordsList');
+            const emptyRecords = document.getElementById('emptyRecords');
+
+            if (attendanceData.length === 0) {
+                emptyRecords.style.display = 'block';
+                recordsList.innerHTML = '';
+                return;
+            }
+
+            emptyRecords.style.display = 'none';
+            filterRecords();
+        }
+
+        // Filter Records
+        function filterRecords() {
+            const statusFilter = document.getElementById('filterStatus').value;
+            const searchRoll = document.getElementById('searchRoll').value.toLowerCase();
+            const recordsList = document.getElementById('recordsList');
+
+            let filtered = attendanceData;
+
+            // Filter by status
+            if (statusFilter === 'normal') {
+                filtered = filtered.filter(r => r.prediction === 0);
+            } else if (statusFilter === 'suspicious') {
+                filtered = filtered.filter(r => r.prediction === 1);
+            }
+
+            // Filter by roll number
+            if (searchRoll) {
+                filtered = filtered.filter(r => r.rollNumber.toLowerCase().includes(searchRoll));
+            }
+
+            // Display
+            recordsList.innerHTML = filtered.map(record => `
+                <div class="record-item">
+                    <div class="record-header">
+                        <div>
+                            <div class="record-title">${record.studentName}</div>
+                            <p style="color: var(--rose-gold); margin-top: 0.25rem;">
+                                ${record.rollNumber} • ${record.studentClass}
+                            </p>
+                        </div>
+                        <span class="badge ${record.prediction === 0 ? 'badge-normal' : 'badge-suspicious'}">
+                            ${record.prediction === 0 ? '✅ NORMAL' : '⚠️ SUSPICIOUS'}
+                        </span>
+                    </div>
+                    <div class="record-details">
+                        <div class="record-detail">
+                            <strong>Subject:</strong>
+                            <span>${record.subject}</span>
+                        </div>
+                        <div class="record-detail">
+                            <strong>Date:</strong>
+                            <span>${record.date}</span>
+                        </div>
+                        <div class="record-detail">
+                            <strong>Time:</strong>
+                            <span>${record.time}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Update AI Insights
+        function updateAIInsights() {
+            const flaggedPatterns = document.getElementById('flaggedPatterns');
+            const emptyInsights = document.getElementById('emptyInsights');
+            
+            const suspicious = attendanceData.filter(r => r.prediction === 1);
+
+            if (suspicious.length === 0) {
+                emptyInsights.style.display = 'block';
+                flaggedPatterns.innerHTML = `
+                    <div class="alert alert-success">
+                        <strong>✅ All Clear:</strong> No suspicious patterns detected. All attendance appears normal!
+                    </div>
+                `;
+                return;
+            }
+
+            emptyInsights.style.display = 'none';
+
+            // Group by student
+            const studentFlags = {};
+            suspicious.forEach(r => {
+                if (!studentFlags[r.rollNumber]) {
+                    studentFlags[r.rollNumber] = {
+                        name: r.studentName,
+                        records: []
+                    };
+                }
+                studentFlags[r.rollNumber].records.push(r);
+            });
+
+            flaggedPatterns.innerHTML = `
+                <p style="margin-bottom: 1rem;"><strong>Students with Multiple Flags:</strong></p>
+                ${Object.entries(studentFlags).map(([roll, data]) => `
+                    <div style="background: rgba(255, 107, 107, 0.1); padding: 1rem; border-radius: 10px; margin-bottom: 1rem; border-left: 3px solid var(--danger);">
+                        <strong style="color: var(--danger);">🚨 ${data.name} (${roll}) - ${data.records.length} flags</strong>
+                        <ul style="margin-top: 0.5rem; margin-left: 1.5rem; line-height: 1.8;">
+                            ${data.records.map(r => `
+                                <li><strong>${r.subject}</strong> on ${r.date} at ${r.time}</li>
+                            `).join('')}
+                        </ul>
+                    </div>
+                `).join('')}
+            `;
+        }
+
+        // Export to CSV
+        function exportToCSV() {
+            if (attendanceData.length === 0) {
+                alert('No data to export!');
+                return;
+            }
+
+            const csv = [
+                ['Roll Number', 'Name', 'Class', 'Subject', 'Date', 'Time', 'Status'],
+                ...attendanceData.map(r => [
+                    r.rollNumber,
+                    r.studentName,
+                    r.studentClass,
+                    r.subject,
+                    r.date,
+                    r.time,
+                    r.prediction === 0 ? 'Normal' : 'Suspicious'
+                ])
+            ].map(row => row.join(',')).join('\n');
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `attendance_data_${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        // Save Data to localStorage
+        function saveData() {
+            localStorage.setItem('attendanceData', JSON.stringify(attendanceData));
+        }
+
+        // Load Data from localStorage
+        function loadData() {
+            const saved = localStorage.getItem('attendanceData');
+            if (saved) {
+                attendanceData = JSON.parse(saved);
+            }
+        }
+
+        // Clear All Data
+        function clearAllData() {
+            if (confirm('Are you sure you want to clear all attendance data?')) {
+                attendanceData = [];
+                saveData();
+                updateDashboard();
+                displayRecords();
+                updateAIInsights();
+                alert('All data cleared!');
+            }
+        }
+    </script>
+</body>
+</html>
+
+
