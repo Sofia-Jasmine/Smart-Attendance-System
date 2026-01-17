@@ -1,0 +1,56 @@
+# -----------------------------
+# Python cache / compiled files
+# -----------------------------
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# -----------------------------
+# Virtual environments
+# -----------------------------
+venv/
+env/
+.venv/
+
+# -----------------------------
+# IDE / Editor files
+# -----------------------------
+.vscode/
+.idea/
+*.swp
+
+# -----------------------------
+# OS generated files
+# -----------------------------
+.DS_Store
+Thumbs.db
+
+# -----------------------------
+# ML generated files (DO NOT COMMIT)
+# -----------------------------
+models/
+artifacts/
+
+# -----------------------------
+# Runtime generated files
+# -----------------------------
+logs/
+database/
+*.log
+
+# -----------------------------
+# Environment / secrets
+# -----------------------------
+.env
+
+# -----------------------------
+# Jupyter notebooks (optional)
+# -----------------------------
+.ipynb_checkpoints/
+
+# -----------------------------
+# Temporary files
+# -----------------------------
+*.tmp
+*.bak
